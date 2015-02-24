@@ -1,0 +1,43 @@
+<div class="form-container">
+  <table class="table table.striped">
+    <thead class="tablehead">
+    <tr>
+      <th>JobID</th>
+      <th>Ranking</th>
+      <th>Preference</th>
+    </tr>
+    </thead>
+    <tr ng-repeat="item in rankings">
+      <td>
+        <input type="number" placeholder="Job ID" ng-model="item.jobID" ng-required=""
+               integer>
+      </td>
+      <td>
+        <select ng-model="item.ranking" ng-required="">
+          <option>Ranked</option>
+          <option>Offered</option>
+        </select>
+      </td>
+      <td>
+        <input type="number" placeholder="Your Preference" ng-model="item.preference"
+               integer
+               min="0"
+               max="9"
+               ng-required="">
+      </td>
+    </tr>
+
+  </table>
+  <div class="after-table">
+  <p>Enter 0 for your preference if you are not sure</p>
+  <span>{{message}}</span>
+  <button class="btn btn-primary button-block" ng-click="addAnother()">
+    <span class="glyphicon glyphicon-plus"></span>
+    Add Another</button>
+    <button class="btn btn-positive button-block"
+        ng-click="submit()">
+      Submit
+    </button>
+  </div>
+
+</div>

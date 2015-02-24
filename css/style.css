@@ -1,0 +1,15 @@
+.form-container{
+    padding-top:50px;
+    padding-left: 20px;
+    padding-bottom: 20px;
+    margin: 0 auto;
+}
+
+.form-container>table{
+    margin: 0 auto;
+    width:75%;
+}
+.form-container>.after-table{
+    margin: 0 auto;
+    text-align: center;
+}
