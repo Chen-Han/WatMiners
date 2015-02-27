@@ -17,6 +17,6 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     .state('ranking-display', {
       url: '/ranking-display',
       controller:"DisplayCtrl",
-      templateUrl:'template/ranking-table.html'
+      templateUrl:'template/ranking-display.html'
     });
 });

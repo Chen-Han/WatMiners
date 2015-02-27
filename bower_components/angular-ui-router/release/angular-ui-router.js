@@ -2038,7 +2038,7 @@ function $UrlRouterProvider(   $locationProvider,   $urlMatcherFactory) {
        * });
        * </pre>
        */
-      sync: function() {
+      syncRanking: function() {
         update();
       },
 
