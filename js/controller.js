@@ -1,12 +1,16 @@
 /**
  * Created by Han Chen on 24/02/2015.
  */
-app.controller("InputCtrl", ["$scope", "$rootScope","$service","$state", "$stateParams",
-  function ($scope,$rootScope,$service,$state,$stateParams) {
+app.controller("InputCtrl", ["$scope", "$rootScope","$service","$state", "$stateParams","$firebase",
+  function ($scope,$rootScope,$service,$state,$stateParams,$firebase) {
   if($service.authData===null){
     $state.go("home");
   }
   else {
+    /*var sync = $firebase(new Firebase("https://watminers.firebaseio.com/jobs")).$asObject();
+    sync.$loaded().then(function(){
+      console.log(sync);
+    }).catch(function(err){console.log(err);});*/
     $service.didUserRank(onRanked,onNotRanked);
     function onRanked(){$state.go("ranking-display");}
     function onNotRanked() {
@@ -31,7 +35,7 @@ app.controller("InputCtrl", ["$scope", "$rootScope","$service","$state", "$state
       };
       $scope.submit = function () {
         var onSuccess = function () {
-          $state.go("display-table");
+          $state.go("ranking-display");
         };
         var onError = function (errorMessage) {
           $scope.message = errorMessage;
@@ -39,7 +43,6 @@ app.controller("InputCtrl", ["$scope", "$rootScope","$service","$state", "$state
         console.log($scope.rankings);
         $service.addRankings(angular.copy($scope.rankings), onSuccess, onError);
       };
-      $scope.$digest();
     }
   }
 }])
@@ -66,24 +69,35 @@ app.controller("InputCtrl", ["$scope", "$rootScope","$service","$state", "$state
 
   .controller("DisplayCtrl",["$scope", "$rootScope","$service","$state", "$stateParams",
     function ($scope,$rootScope,$service,$state,$stateParams) {
-    $service.getRankings(function(res){
-      //reorganize res
-      var ownRanking = res[_.findIndex(res,function(i){return i.$id==$service.authData.uid;})];
-      var jobs=[];
-      for(var i=0;i<res.length;i++){
-        for(var j=0;j<res[i].length;j++){
-          for(var k=0;k<ownRanking.length;k++){
-            if(res[i][j].jobID==ownRanking[k].jobID){
-              jobs.push(res[i][j]);
-            }
-          }
+      if(!$service.rankings || !$service.authData){
+        $state.go('home');
+      }else {
+        $scope.rankings = [];
+        function isArray(obj) {
+          return Object.prototype.toString.call(obj) === '[object Array]';
         }
+
+        $service.getRankings(function (res) {
+          console.log(res);
+          for(var i=0;i<res.length;i++){
+            $scope.rankings.push(res[i]);
+          }
+          /* this code was for syncing the rankings data, obsolete now
+           //reorganize res
+           var ownRanking = res[_.findIndex(res,function(i){return i.$id==$service.authData.uid;})];
+           var jobs=[];
+           for(var i=0;i<res.length;i++){
+           for(var j=0;j<res[i].length;j++){
+           for(var k=0;k<ownRanking.length;k++){
+           if(res[i][j].jobID==ownRanking[k].jobID){
+           jobs.push(res[i][j]);
+           }
+           }
+           }
+           }*/
+        }, function (error) {
+          console.log(error);
+          $state.go("home");
+        });
       }
-      $scope.rankings=_.sortBy(jobs,'jobID');
-      console.log(res);
-      console.log(jobs);
-    },function(error){
-      console.log(error);
-      $state.go("home");
-    });
   }]);
