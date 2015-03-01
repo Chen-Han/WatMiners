@@ -1,4 +1,4 @@
-<div class="form-container">
+<div class="table-container" ng-show="!isLoading">
   <form ng-submit="submit()">
   <table class="table table.striped">
     <thead class="tablehead">
@@ -10,7 +10,7 @@
     </thead>
     <tr ng-repeat="item in rankings">
       <td>
-        <input type="number" placeholder="Job ID" ng-model="item.jobID" ng-required=""
+        <input type="text" placeholder="Job ID" ng-model="item.jobID" ng-required=""
                integer>
       </td>
       <td>
@@ -26,11 +26,15 @@
                max="9"
                ng-required="">
       </td>
+      <td>
+        <button class="btn btn-danger" ng-click="deleteRecord($index)">DELETE</button>
+      </td>
     </tr>
 
   </table>
   <div class="after-table">
-  <p>Enter 0 for your preference if you are not sure</p>
+  <p>Enter your preference as a number between -1 to 9 for each job</p>
+    <p>0 means you are not sure, -1 means you are not taking it</p>
   <span>{{message}}</span>
   <button class="btn btn-primary button-block" ng-click="addAnother()">
     <span class="glyphicon glyphicon-plus"></span>
@@ -39,7 +43,7 @@
         type="submit">
       Submit
     </button>
-    <p>{{message}}</p>
   </div>
   </form>
 </div>
+    <p style="color:#e5e5e5">LOADING</p>

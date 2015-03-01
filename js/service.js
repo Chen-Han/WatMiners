@@ -21,6 +21,7 @@ app.service("$service",["$http","$firebaseAuth","$firebase","$timeout",
       if(onSuccess) onSuccess();
     }).catch(function(error) {
       console.error("Authentication failed:", error);
+      if (onError) onError("login failed, try referesh the page");
     });
   };
 

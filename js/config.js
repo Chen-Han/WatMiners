@@ -14,6 +14,10 @@ app.config(function ($stateProvider, $urlRouterProvider) {
       controller:"InputCtrl",
       templateUrl:'template/ranking-input.html'
     })
+    .state('about',{
+      url: '/about',
+      templateUrl:'template/about.html'
+    })
     .state('ranking-display', {
       url: '/ranking-display',
       controller:"DisplayCtrl",

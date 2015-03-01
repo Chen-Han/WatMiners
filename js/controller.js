@@ -11,9 +11,9 @@ app.controller("InputCtrl", ["$scope", "$rootScope","$service","$state", "$state
     sync.$loaded().then(function(){
       console.log(sync);
     }).catch(function(err){console.log(err);});*/
-    $service.didUserRank(onRanked,onNotRanked);
+    $service.didUserRank(onRanked,function(){$scope.isLoading=false});
+    $scope.isLoading=true;
     function onRanked(){$state.go("ranking-display");}
-    function onNotRanked() {
       $scope.rankings = [];
       function createItem() {
         return {
@@ -44,7 +44,6 @@ app.controller("InputCtrl", ["$scope", "$rootScope","$service","$state", "$state
         $service.addRankings(angular.copy($scope.rankings), onSuccess, onError);
       };
     }
-  }
 }])
   .controller("IntroCtrl",["$scope", "$rootScope","$state", "$stateParams","$firebaseAuth","$service",
     function ($scope,$rootScope,$state,$stateParams,$firebaseAuth,$service) {
@@ -53,7 +52,10 @@ app.controller("InputCtrl", ["$scope", "$rootScope","$service","$state", "$state
         var onSuccess=function(){
           $state.go("ranking-input");
         };
-        $service.login(onSuccess);
+        var onError=function(err){
+          alert(err);
+        };
+        $service.login(onSuccess,onError);
         /*$service.ref = new Firebase("https://watminers.firebaseio.com");
         $service.authObj = $firebaseAuth($service.ref);
         $service.authObj.$authWithOAuthPopup("facebook").then(function(authData) {
