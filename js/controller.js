@@ -71,7 +71,7 @@ app.controller("InputCtrl", ["$scope", "$rootScope","$service","$state", "$state
 
   .controller("DisplayCtrl",["$scope", "$rootScope","$service","$state", "$stateParams",
     function ($scope,$rootScope,$service,$state,$stateParams) {
-      if(!$service.rankings || !$service.authData){
+      if(!$service.authData){
         $state.go('home');
       }else {
         $scope.rankings = [];

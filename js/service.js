@@ -95,11 +95,14 @@ app.service("$service",["$http","$firebaseAuth","$firebase","$timeout",
         console.log(service.rankings);
         for (var i = 0; i < service.rankings.length; i++) {
           (function(){
+            var p=i;
           var sync = $firebase(new Firebase(service.firebaseURL + "/jobs/" + service.rankings[i].jobID)).$asArray();
           sync.$loaded().then(function () {
             //console.log(sync);
+            if(p===service.rankings.length-1) Firebase.goOffline();
             if (onSuccess) onSuccess(sync);
           }).catch(function (error) {
+            if(p===service.rankings.length-1) Firebase.goOffline();
             console.log(error);
           });})();
         }
