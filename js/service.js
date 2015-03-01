@@ -3,27 +3,28 @@
  */
 app.service("$service",["$http","$firebaseAuth","$firebase","$timeout",
   function($http,$firebaseAuth,$firebase,$timeout){
-  var service=this;
+    var service=this;
     this.firebaseURL = "https://watminers.firebaseio.com";
-  this.authObj=null;
-  this.refRanking=null;
+    this.refRanking=new Firebase(service.firebaseURL);
+    this.authObj=$firebaseAuth(service.refRanking);
     this.rankings=null;
-  this.refJob=null;
-  this.syncRanking=null;
-  this.authData=null;
-  this.login=function(onSuccess,onError){
-    service.refRanking = new Firebase(service.firebaseURL);
-    service.authObj = $firebaseAuth(service.refRanking);
-    service.authObj.$authWithOAuthPopup("facebook").then(function(authData) {
-      service.authData=authData;
-      console.log("Logged in as:", authData); //for debug
-      Firebase.goOffline();
-      if(onSuccess) onSuccess();
-    }).catch(function(error) {
-      console.error("Authentication failed:", error);
-      if (onError) onError("login failed, try referesh the page");
-    });
-  };
+    this.refJob=null;
+    this.syncRanking=null;
+    this.authData=this.authObj.$getAuth();
+    Firebase.goOffline();
+    this.login=function(onSuccess,onError){
+      Firebase.goOnline();
+      service.authObj.$authWithOAuthPopup("facebook").then(function(authData) {
+        service.authData=authData;
+        console.log("Logged in as:", authData); //for debug
+        Firebase.goOffline();
+        if(onSuccess) onSuccess();
+      }).catch(function(error) {
+        Firebase.goOffline();
+        console.error("Authentication failed:", error);
+        if (onError) onError("login failed, try referesh the page");
+      });
+    };
 
   //TODO didUserRank() boolean
     this.didUserRank=function(onRanked,onNotRanked){
@@ -49,6 +50,23 @@ app.service("$service",["$http","$firebaseAuth","$firebase","$timeout",
     };
   //TODO addRankings() @param userdata onSuccess, onError
   this.addRankings=function(rankings,onSuccess,onError){
+    //data checking
+    for(var j=0;j<rankings.length;j++){
+      if(rankings[j].jobID.length!==8 || isNaN(rankings[j].jobID)){
+        onError("Please check if your jobID is the right format before submitting");
+        return;
+      }else if(isNaN(rankings[j].preference) || rankings[j].preference<-1 || rankings[j].preference>9){
+        onError("Please check if your preference is the right format before submitting");
+        return;
+      }
+      for(var k=0;k<j;k++){
+        if(rankings[j].jobID==rankings[k].jobID)
+        {
+          onError("You have duplicate jobID");
+          return;
+        }
+      }
+    }
     Firebase.goOnline();
     console.log(rankings);
     var lastSync=null;
@@ -59,7 +77,7 @@ app.service("$service",["$http","$firebaseAuth","$firebase","$timeout",
       rankings[i].jobID+="";
       var sync2 = $firebase(new Firebase(service.firebaseURL+"/jobs/"+rankings[i].jobID));
       lastSync=sync2.$set(service.authData.uid,rankings[i]).catch(function(err){
-        if (onError) onError();
+        if (onError) onError("there is an error submitting your rankings, perhaps your data format is invalid");
         console.log(err);
       });
     }
@@ -107,6 +125,5 @@ app.service("$service",["$http","$firebaseAuth","$firebase","$timeout",
           });})();
         }
       }
-
     };
 }]);

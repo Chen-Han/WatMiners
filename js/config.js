@@ -1,7 +1,7 @@
 /**
  * Created by Han Chen on 24/02/2015.
  */
-app.config(function ($stateProvider, $urlRouterProvider) {
+app.config(["$stateProvider","$urlRouterProvider",function ($stateProvider, $urlRouterProvider) {
   $urlRouterProvider.otherwise('/');
   $stateProvider
     .state('home', {
@@ -23,4 +23,4 @@ app.config(function ($stateProvider, $urlRouterProvider) {
       controller:"DisplayCtrl",
       templateUrl:'template/ranking-display.html'
     });
-});
+}]);
