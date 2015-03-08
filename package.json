@@ -1,0 +1,22 @@
+{
+  "name": "WatMiners",
+  "version": "1.0.0",
+  "description": "Co-op ranking shouldn't be a pain.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Chen-Han/WatMiners.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Chen-Han/WatMiners/issues"
+  },
+  "homepage": "https://github.com/Chen-Han/WatMiners",
+  "dependencies": {
+    "mongodb": "^1.4.33"
+  }
+}
