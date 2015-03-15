@@ -13,3 +13,35 @@ var app=angular.module('app',["ui.router","ui.bootstrap","firebase"])
       fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));*/
   });
+
+var http = require("http");
+var mongo = require("./db/database.js");
+var user = require("./db/user.js");
+
+var createUser = function(data, callback){
+  mongo.insert(user(data), "user", callback);
+}
+
+var server = http.createServer(function(request, response) {
+
+    if (request.method == "POST"){
+        request.on("data", function(jsonBody){
+            var parsedBody = JSON.parse(jsonBody);
+            console.log(parsedBody);
+
+            if(parsedBody.method == "create"){
+                createUser(parsedBody, function(){
+                  response.writeHead(200, {
+                    "Content-Type": "plain/text",
+                    "Content-Language":"utf-8"
+                  });
+                  response.write(JSON.stringify(parsedBody));
+                  response.end();
+                })
+            }
+        });
+    }
+});
+
+server.listen(8080);
+console.log("Server is listening");
