@@ -1,5 +1,5 @@
 var MongoClient = require('mongodb').MongoClient
-var asser = require('assert')
+var assert = require('assert')
 
 var url = "mongodb://localhost:27017"
 
